@@ -64,9 +64,14 @@ npm run dev
 
 1. Cloudflare Dashboard → **Workers & Pages** → Import 本仓库  
 2. **Build command**：`npm run build:cf`  
-3. **Deploy command**：`npx wrangler deploy`  
-4. Secrets 中配置 `SITE_PASSWORD`、`AUTH_SECRET`（以及可选 Cookie）  
-5. Redeploy
+3. **Deploy command**：`npx wrangler deploy --keep-vars`  
+   （**必须带** `--keep-vars`，否则每次部署会清掉面板里的 `SITE_PASSWORD` 等 Secrets）  
+4. Worker → **Settings → Variables and Secrets** 添加（类型选 **Secret**）：  
+   - `SITE_PASSWORD`  
+   - `AUTH_SECRET`  
+5. 再点一次 **Retry deployment** / Redeploy  
+
+> 若登录页提示「站点未配置访问密码」：多半是 Deploy 命令少了 `--keep-vars`，或 Secrets 被上次部署清掉。补上命令后重新添加 Secrets 并 Redeploy。
 
 ### Docker
 

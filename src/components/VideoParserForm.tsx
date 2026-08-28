@@ -87,8 +87,6 @@ export default function VideoParserForm({
   const [url, setUrl] = useState("");
   const [platform, setPlatform] = useState<VideoPlatformKey | "auto">("auto");
   const [isFocused, setIsFocused] = useState(false);
-  const [detectedPlatform, setDetectedPlatform] =
-    useState<VideoPlatformKey | null>(null);
   // 是否已解析成功：成功后按钮禁用显示「已解析」，避免重复点击；输入变化时重置
   const [hasResult, setHasResult] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -210,7 +208,6 @@ export default function VideoParserForm({
       const extractedUrl = extractUrl(text);
       if (extractedUrl) {
         const detected = detectPlatform(text);
-        setDetectedPlatform(detected);
         // 识别不到平台：提示用户链接不对，不发起解析
         // （去掉兜底 douyin 后，任意 URL 不再被默认当抖音解析）
         if (!detected) {
@@ -234,11 +231,9 @@ export default function VideoParserForm({
         } else {
           debouncedParse(extractedUrl, detected);
         }
-      } else {
-        setDetectedPlatform(null);
       }
     },
-    [debouncedParse, parseVideo, onResult, onPlatformChange]
+    [debouncedParse, parseVideo, onPlatformChange, onResult]
   );
 
   // Auto-read clipboard on mount
@@ -314,7 +309,6 @@ export default function VideoParserForm({
     cancelPending();
     setInput("");
     setUrl("");
-    setDetectedPlatform(null);
     setPlatform("auto");
     setHasResult(false);
     onPlatformChange?.("auto");

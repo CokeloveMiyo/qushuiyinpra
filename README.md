@@ -42,20 +42,31 @@ npm run dev
 | `DOUYIN_COOKIE` | 否 | 提高抖音解析成功率 |
 | `BILIBILI_COOKIE` | 否 | 提高 B站解析成功率 |
 
-## 部署（推荐 Cloudflare Workers）
+## 一键部署
+
+### Vercel（推荐上手最快）
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FCokeloveMiyo%2Fqushuiyinpra&project-name=qushuiyinpra&repository-name=qushuiyinpra&env=SITE_PASSWORD,AUTH_SECRET&envDescription=SITE_PASSWORD%20%E4%B8%BA%E8%AE%BF%E9%97%AE%E5%AF%86%E7%A0%81%EF%BC%8CAUTH_SECRET%20%E4%B8%BA%20Cookie%20%E7%AD%BE%E5%90%8D%E5%AF%86%E9%92%A5)
+
+1. 点上方按钮（或 Vercel Import 本仓库）  
+2. Framework：Next.js，Build Command：`npm run build`（默认即可）  
+3. 在 Environment Variables 填写：  
+   - `SITE_PASSWORD`＝网站访问密码  
+   - `AUTH_SECRET`＝一串长随机字符  
+4. Deploy → 打开 `*.vercel.app`，先输入密码再使用  
+5.（可选）再加 `DOUYIN_COOKIE` / `BILIBILI_COOKIE` 后 Redeploy
+
+> 国内访问 Vercel 可能较慢；主要给国内用户用可改用下方 Cloudflare。
+
+### Cloudflare Workers
 
 原项目已适配 OpenNext，国内访问通常优于 Vercel。
 
-1. Fork / 推送本仓库到 GitHub  
-2. Cloudflare Dashboard → **Workers & Pages** → Import 本仓库  
-3. **Build command**：`npm run build:cf`  
-4. **Deploy command**：`npx wrangler deploy`  
-5. Secrets 中配置 `SITE_PASSWORD`、`AUTH_SECRET`（以及可选 Cookie）  
-6. Redeploy
-
-### 备选：Vercel
-
-Import 仓库 → 默认 `npm run build` → 同样配置上述环境变量 → Deploy。
+1. Cloudflare Dashboard → **Workers & Pages** → Import 本仓库  
+2. **Build command**：`npm run build:cf`  
+3. **Deploy command**：`npx wrangler deploy`  
+4. Secrets 中配置 `SITE_PASSWORD`、`AUTH_SECRET`（以及可选 Cookie）  
+5. Redeploy
 
 ### Docker
 

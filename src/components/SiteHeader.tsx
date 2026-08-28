@@ -50,12 +50,13 @@ export default function SiteHeader() {
             title="联系我"
             className="inline-flex items-center gap-2 rounded-full bg-[#12B7F5] px-3 py-2 text-sm font-semibold text-white shadow-[0_0_20px_rgba(18,183,245,0.35)] transition hover:brightness-110 sm:px-4"
           >
-            <img
+            <Image
               src="/logos/qq.svg"
               alt=""
               width={20}
               height={20}
               className="h-5 w-5 brightness-0 invert"
+              unoptimized
             />
             <span className="hidden sm:inline">联系我</span>
             <span className="sm:hidden">联系</span>

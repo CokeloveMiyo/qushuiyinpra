@@ -139,7 +139,7 @@ export default function Home() {
                     setPickNonce((n) => n + 1);
                   }}
                   title={`解析${p.name}`}
-                  aria-pressed={active}
+                  aria-current={active ? "page" : undefined}
                   className={`flex min-w-0 cursor-pointer items-center justify-center gap-1.5 rounded-xl border px-2 py-2 text-xs transition ${
                     active
                       ? "border-accent/60 bg-accent/10 font-medium text-foreground"

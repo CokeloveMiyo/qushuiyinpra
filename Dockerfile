@@ -1,0 +1,79 @@
+# =============================================================================
+# 阶段 1：deps — 仅安装依赖（利用 Docker 层缓存）
+# =============================================================================
+# 注意：本文件变更会触发 .github/workflows/deploy-to-docker.yaml，
+# 自动构建 GHCR 镜像并部署到服务器（解析站点当前运行方式）。
+
+FROM node:20-alpine AS deps
+
+# 国内 npm 镜像源加速
+RUN npm config set registry https://registry.npmmirror.com
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# =============================================================================
+# 阶段 2：builder — 编译 Next.js 应用
+# =============================================================================
+FROM node:20-alpine AS builder
+
+RUN npm config set registry https://registry.npmmirror.com
+
+WORKDIR /app
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+# 稳定构建 ID，避免多副本 / 滚动更新时前后端 build 不一致（Server Action 报错）
+# 使用：docker build --build-arg BUILD_ID=$(git rev-parse HEAD) .
+ARG BUILD_ID=local
+ENV NEXT_BUILD_ID=${BUILD_ID}
+
+# 构建应用（next.config.mjs 已启用 output: "standalone"）
+# .env 已被 .dockerignore 排除，构建不会带入敏感配置
+RUN npm run build
+
+# =============================================================================
+# 阶段 3：runner — 最小运行时镜像
+# =============================================================================
+FROM node:20-alpine AS runner
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+# Next.js standalone 服务监听端口
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+# yt-dlp + ffmpeg（YouTube 解析）：yt-dlp 下载分离式音视频流，
+# ffmpeg 合并为完整 MP4。仅 Docker 部署支持 YouTube（Serverless 无此环境）。
+# --break-system-packages：新版 Alpine 的 python 为 externally-managed（PEP 668），
+# 直接全局 pip install 会被拒绝；容器内安装 yt-dlp 无系统副作用，可安全绕过。
+# curl-cffi：提供浏览器 TLS 指纹（--impersonate），绕过 YouTube 第二关 TLS 识别；
+# bgutil-ytdlp-pot-provider：生成 Proof-of-Origin Token，绕过数据中心 IP 的
+# "Sign in to confirm you're not a bot" 人机验证（第四关）。
+RUN apk add --no-cache python3 py3-pip ffmpeg \
+ && pip install --no-cache-dir --break-system-packages \
+      "yt-dlp[default,curl-cffi]" \
+      bgutil-ytdlp-pot-provider \
+ && rm -rf /root/.cache/pip
+
+# 非 root 用户运行（node:alpine 自带 node 用户，UID 1000）
+USER node
+
+# 复制 standalone 产物（已裁剪掉 devDependencies 与未引用代码）
+# --chown=node:node 确保 node 用户可读
+COPY --from=builder --chown=node:node /app/.next/standalone ./
+COPY --from=builder --chown=node:node /app/.next/static ./.next/static
+COPY --from=builder --chown=node:node /app/public ./public
+
+EXPOSE 3000
+
+# 健康检查：每 30s 探测 /api/health
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD node -e "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+
+# standalone 模式直接运行编译产物，无需 next start
+CMD ["node", "server.js"]

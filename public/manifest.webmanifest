@@ -1,0 +1,17 @@
+{
+  "name": "小罗斯私人解析平台",
+  "short_name": "小罗斯解析",
+  "description": "私人短视频解析工具，支持抖音、快手、B站、小红书等多平台",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0b14",
+  "theme_color": "#0b0b14",
+  "icons": [
+    {
+      "src": "/avatar.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}

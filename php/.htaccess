@@ -1,0 +1,11 @@
+# 禁止直接访问配置与库文件
+<FilesMatch "^(config\.php|config\.sample\.php)$">
+  Require all denied
+</FilesMatch>
+
+DirectoryIndex index.php login.php
+
+# 若主机支持，开启 HTTPS 跳转可自行取消注释
+# RewriteEngine On
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]

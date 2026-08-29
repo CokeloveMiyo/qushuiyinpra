@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS parse_logs (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  platform VARCHAR(32) NOT NULL DEFAULT '',
+  url VARCHAR(500) NOT NULL DEFAULT '',
+  success TINYINT(1) NOT NULL DEFAULT 0,
+  message VARCHAR(255) NOT NULL DEFAULT '',
+  created_at DATETIME NOT NULL,
+  KEY idx_created (created_at),
+  KEY idx_platform (platform)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

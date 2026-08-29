@@ -41,8 +41,10 @@
 
 详见 [`php/README.md`](./php/README.md)。
 
-1. 修改 `php/config.php`：`site_password`、`auth_secret`
-2. 上传 `php/` 内全部文件到网站根目录
+**一键下载部署包：** [xiaoluo-php-vhost.zip](https://github.com/CokeloveMiyo/qushuiyinpra/releases/latest/download/xiaoluo-php-vhost.zip)（[Release 说明](https://github.com/CokeloveMiyo/qushuiyinpra/releases/tag/php-vhost-v1.0.0)）
+
+1. 下载 zip 并解压，修改 `config.php`：`site_password`、`auth_secret`
+2. 上传全部文件到网站根目录
 3. PHP ≥ 8.1，开启 `curl` / `openssl` / `json` / `mbstring`
 4. **开启 HTTPS**（手机粘贴剪贴板、分享到相册需要）
 5. 打开站点输入密码即可

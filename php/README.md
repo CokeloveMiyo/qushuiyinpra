@@ -16,8 +16,11 @@
 
 ## 部署
 
-1. 修改 `config.php` 中的 `site_password`、`auth_secret`（可参考 `config.sample.php`）
-2. 将本目录（`php/`）全部上传到网站根目录或子目录
+**推荐：** 直接下载 Release 部署包  
+→ [xiaoluo-php-vhost.zip](https://github.com/CokeloveMiyo/qushuiyinpra/releases/latest/download/xiaoluo-php-vhost.zip)
+
+1. 解压后修改 `config.php` 中的 `site_password`、`auth_secret`（可参考 `config.sample.php`）
+2. 将全部文件上传到网站根目录或子目录
 3. PHP ≥ 8.1（推荐 8.2+），开启 `curl`、`openssl`、`json`、`mbstring`
 4. 开启 HTTPS（手机剪贴板 / 分享存相册需要安全上下文）
 5. （可选）导入 `sql/init.sql` 并打开 `mysql.enabled`
